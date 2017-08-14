@@ -786,6 +786,7 @@ install-azure-cli-2()
         log "Installing Azure CLI 2.0"
         apt-get -y install azure-cli
         exit_on_error "Failed installing azure cli 2.0 on ${HOSTNAME} !" $ERROR_AZURECLI2_INSTALLATION_FAILED
+        az cloud set --name AzureChinaCloud
     fi
 }
 
