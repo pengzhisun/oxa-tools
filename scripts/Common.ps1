@@ -354,7 +354,7 @@ function Authenticate-AzureRmUser
     }
     else
     {
-        $results = azure login -u $AadWebClientId --service-principal --tenant $AadTenantId -p $AadWebClientAppKey -vv --json | Out-String
+        $results = azure login -e AzureChinaCloud -u $AadWebClientId --service-principal --tenant $AadTenantId -p $AadWebClientAppKey -vv --json | Out-String
         if (!$results.Contains("login command OK"))
         {
             throw "Login failed"
