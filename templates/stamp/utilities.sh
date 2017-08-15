@@ -175,7 +175,7 @@ install-mongodb-shell()
     else
         log "Installing MongoDB Shell"
         
-        PACKAGE_URL=http://repo.mongodb.org/apt/ubuntu
+        PACKAGE_URL=https://mirror.azure.cn/mongodb/apt/ubuntu
         SHORT_RELEASE_NUMBER=`lsb_release -sr`
         SHORT_CODENAME=`lsb_release -sc`
 
