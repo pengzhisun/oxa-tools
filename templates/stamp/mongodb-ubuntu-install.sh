@@ -4,7 +4,7 @@
 # Licensed under the MIT license. See LICENSE file on the project webpage for details.
 
 # general parameters
-PACKAGE_URL=http://repo.mongodb.org/apt/ubuntu
+PACKAGE_URL=https://mirror.azure.cn/mongodb/apt/ubuntu
 PACKAGE_NAME=mongodb-org
 REPLICA_SET_KEY_DATA=""
 REPLICA_SET_NAME=""
