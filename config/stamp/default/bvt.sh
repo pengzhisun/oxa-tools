@@ -74,7 +74,7 @@ MONGO_REPLICASET_NAME={MONGO_REPLICASET_NAME}
 
 # MongoDB Installer Configurations
 MONGO_INSTALLER_SCRIPT=mongodb-ubuntu-install.sh
-MONGO_INSTALLER_BASE_URL=http://repo.mongodb.org/apt/ubuntu
+MONGO_INSTALLER_BASE_URL=https://mirror.azure.cn/mongodb/apt/ubuntu
 MONGO_INSTALLER_PACKAGE_NAME=mongodb-org
 MONGO_SERVER_IP_PREFIX=10.0.0.
 MONGO_SERVER_IP_OFFSET=10
