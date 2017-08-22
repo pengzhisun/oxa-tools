@@ -142,7 +142,7 @@ install_mysql_server()
     apt-get install -y -qq python-pip python-dev libmysqlclient-dev
 
     log "Pip installing $MYSQL_PYTHON_PACKAGE"
-    pip install $MYSQL_PYTHON_PACKAGE
+    pip install $MYSQL_PYTHON_PACKAGE -i https://mirror.azure.cn/pypi/simple
 
     log "Installing Mysql packages: Completed"
 }
