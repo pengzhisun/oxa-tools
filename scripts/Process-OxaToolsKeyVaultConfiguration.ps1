@@ -34,6 +34,9 @@ The Id of the Azure subscription
 .PARAMETER AzureCliVersion
 Version of Azure CLI to use
 
+.PARAMETER CloudEnvironmentName
+The Cloud Environment Name to support Azure National Clouds like AzureChinaCloud, AzureGermanCloud and AzureUSGovernment, the default value is AzureCloud
+
 .INPUTS
 None. You cannot pipe objects to Process-OxaToolsKeyVaultConfiguration.ps1
 
@@ -54,7 +57,8 @@ Param(
         [Parameter(Mandatory=$true)][string]$AadWebClientAppKey,
         [Parameter(Mandatory=$true)][string]$AadTenantId,
         [Parameter(Mandatory=$true)][string]$AzureSubscriptionId,
-        [Parameter(Mandatory=$false)][string][ValidateSet("1","2")]$AzureCliVersion="1"
+        [Parameter(Mandatory=$false)][string][ValidateSet("1","2")]$AzureCliVersion="1",
+        [Parameter(Mandatory=$false)][string]$CloudEnvironmentName="AzureCloud"
      )
 
 ###########################################
@@ -90,7 +94,7 @@ Import-Module "$($currentPath)/Common.ps1" -Force
 [bool]$isCli2 = ($AzureCliVersion -eq "2")
 
 # Login First & set context
-Authenticate-AzureRmUser -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId -IsCli2 $isCli2
+Authenticate-AzureRmUser -EnvironmentName $CloudEnvironmentName -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId -IsCli2 $isCli2
 Set-AzureSubscriptionContext -AzureSubscriptionId $AzureSubscriptionId -IsCli2 $isCli2 
 
 # Get the directory separator

@@ -356,11 +356,11 @@
                     "storageProfile": {
                         "osDisk": {
                             "vhdContainers": [
-                                "[concat('https://', variables('uniqueStringArray')[0], '.blob.core.windows.net/', parameters('storageSettings').storageContainerName)]",
-                                "[concat('https://', variables('uniqueStringArray')[1], '.blob.core.windows.net/', parameters('storageSettings').storageContainerName)]",
-                                "[concat('https://', variables('uniqueStringArray')[2], '.blob.core.windows.net/', parameters('storageSettings').storageContainerName)]",
-                                "[concat('https://', variables('uniqueStringArray')[3], '.blob.core.windows.net/', parameters('storageSettings').storageContainerName)]",
-                                "[concat('https://', variables('uniqueStringArray')[4], '.blob.core.windows.net/', parameters('storageSettings').storageContainerName)]"
+                                "[concat('https://', variables('uniqueStringArray')[0], parameters('storageSettings').blobStorageHostBase, '/', parameters('storageSettings').storageContainerName)]",
+                                "[concat('https://', variables('uniqueStringArray')[1], parameters('storageSettings').blobStorageHostBase, '/', parameters('storageSettings').storageContainerName)]",
+                                "[concat('https://', variables('uniqueStringArray')[2], parameters('storageSettings').blobStorageHostBase, '/', parameters('storageSettings').storageContainerName)]",
+                                "[concat('https://', variables('uniqueStringArray')[3], parameters('storageSettings').blobStorageHostBase, '/', parameters('storageSettings').storageContainerName)]",
+                                "[concat('https://', variables('uniqueStringArray')[4], parameters('storageSettings').blobStorageHostBase, '/', parameters('storageSettings').storageContainerName)]"
                             ],
                             "name": "[concat(parameters('networkSettings').clusterVirtualMachineScaleSetName, parameters('networkSettings').osDiskSuffix)]",
                             "caching": "ReadOnly",
@@ -424,7 +424,7 @@
                                         "fileUris": "[parameters('customSettings').vmScripts]"
                                     },
                                     "protectedSettings": {
-                                        "commandToExecute": "[replace(parameters('customSettings').commandToExecute, parameters('customSettings').storageKeyPlaceholder, parameters('customSettings').secureGenericStorageAccountKey)]",
+                                        "commandToExecute": "[replace(parameters('customSettings').commandToExecute, parameters('customSettings').storageKeyPlaceholder, parameters('customSettings').secureGenericStorageAccountKey)]"
                                     }
                                 }
                             },

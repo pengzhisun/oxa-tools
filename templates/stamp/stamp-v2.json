@@ -640,6 +640,27 @@
             "metadata": {
                 "description": "Indicator of whether or not the Mobile Rest Api is enabled for further integration"
             }
+        },
+        "blobStorageHostBase": {
+            "type": "string",
+            "defaultValue": ".blob.core.windows.net",
+            "metadata": {
+                "description": "The blob storage host base."
+            }
+        },
+        "trafficManagerHostBase": {
+            "type": "string",
+            "defaultValue": ".cloudapp.azure.com",
+            "metadata": {
+                "description": "The traffic manager host base."
+            }
+        },
+        "mongoDbInstallerBaseUrl": {
+            "type": "string",
+            "defaultValue": "http://repo.mongodb.org/apt/ubuntu",
+            "metadata": {
+                "description": "The mongo db installer base url."
+            }
         }
     },
     "variables": {
@@ -664,7 +685,7 @@
         "wamsStorageAccountName": "[concat(toLower(parameters('clusterName')), 'wamssa')]",
         "mediaServicesAccountName": "[concat(toLower(parameters('clusterName')), 'wamsmedia')]",
         "storageAccountType": "Standard_LRS",
-        "storageContainer": "[concat('https://', variables('storageAccountName'),'.blob.core.windows.net/vhds/')]",
+        "storageContainer": "[concat('https://', variables('storageAccountName'), parameters('blobStorageHostBase'), '/vhds/')]",
 
         "loadBalancerName": "[concat(parameters('clusterName'), '-lb-', parameters('deploymentSlot'))]",
         "virtualNetworkName": "[concat(parameters('clusterName'), '-vnet')]",
@@ -741,13 +762,13 @@
                     "monitorConfigPort": 443,
                     "monitorConfigPath": "/",
                     "endpoint1": {
-                        "target": "[concat('lms-', parameters('clusterName'), '-slot1.',resourceGroup().location, '.cloudapp.azure.com')]",
+                        "target": "[concat('lms-', parameters('clusterName'), '-slot1.',resourceGroup().location, parameters('trafficManagerHostBase'))]",
                         "status": "[parameters('lmsTrafficManagerStateMetadata')[0]]",
                         "location": "[resourceGroup().location]",
                         "priority": "[parameters('lmsTrafficManagerStateMetadata')[2]]"
                     },
                     "endpoint2": {
-                        "target": "[concat('lms-', parameters('clusterName'), '-slot2.',resourceGroup().location, '.cloudapp.azure.com')]",
+                        "target": "[concat('lms-', parameters('clusterName'), '-slot2.',resourceGroup().location, parameters('trafficManagerHostBase'))]",
                         "status": "[parameters('lmsTrafficManagerStateMetadata')[1]]",
                         "location": "[resourceGroup().location]",
                         "priority": "[parameters('lmsTrafficManagerStateMetadata')[3]]"
@@ -759,13 +780,13 @@
                     "monitorConfigPort": 443,
                     "monitorConfigPath": "/",
                     "endpoint1": {
-                        "target": "[concat('cms-', parameters('clusterName'), '-slot1.',resourceGroup().location, '.cloudapp.azure.com')]",
+                        "target": "[concat('cms-', parameters('clusterName'), '-slot1.',resourceGroup().location, parameters('trafficManagerHostBase'))]",
                         "status": "[parameters('cmsTrafficManagerStateMetadata')[0]]",
                         "location": "[resourceGroup().location]",
                         "priority": "[parameters('cmsTrafficManagerStateMetadata')[2]]"
                     },
                     "endpoint2": {
-                        "target": "[concat('cms-', parameters('clusterName'), '-slot2.',resourceGroup().location, '.cloudapp.azure.com')]",
+                        "target": "[concat('cms-', parameters('clusterName'), '-slot2.',resourceGroup().location, parameters('trafficManagerHostBase'))]",
                         "status": "[parameters('cmsTrafficManagerStateMetadata')[1]]",
                         "location": "[resourceGroup().location]",
                         "priority": "[parameters('cmsTrafficManagerStateMetadata')[3]]"
@@ -777,13 +798,13 @@
                     "monitorConfigPort": 443,
                     "monitorConfigPath": "/",
                     "endpoint1": {
-                        "target": "[concat('preview-', parameters('clusterName'), '-slot1.',resourceGroup().location, '.cloudapp.azure.com')]",
+                        "target": "[concat('preview-', parameters('clusterName'), '-slot1.',resourceGroup().location, parameters('trafficManagerHostBase'))]",
                         "status": "[parameters('previewTrafficManagerStateMetadata')[0]]",
                         "location": "[resourceGroup().location]",
                         "priority": "[parameters('previewTrafficManagerStateMetadata')[2]]"
                     },
                     "endpoint2": {
-                        "target": "[concat('preview-', parameters('clusterName'), '-slot2.',resourceGroup().location, '.cloudapp.azure.com')]",
+                        "target": "[concat('preview-', parameters('clusterName'), '-slot2.',resourceGroup().location, parameters('trafficManagerHostBase'))]",
                         "status": "[parameters('previewTrafficManagerStateMetadata')[1]]",
                         "location": "[resourceGroup().location]",
                         "priority": "[parameters('previewTrafficManagerStateMetadata')[3]]"
@@ -848,7 +869,8 @@
             "secureGenericStorageAccountName": "[variables('secureGenericStorageAccountName')]",
             "videoUploadsStorageAccountName": "[variables('videoUploadsStorageAccountName')]",
             "wamsStorageAccountName": "[variables('wamsStorageAccountName')]",
-            "mediaServicesAccountName": "[variables('mediaServicesAccountName')]"
+            "mediaServicesAccountName": "[variables('mediaServicesAccountName')]",
+            "blobStorageHostBase": "[parameters('blobStorageHostBase')]"
         },
         "jumpboxMachineSettings": {
             "vmSize": "[parameters('jumpBoxVmSize')]",
@@ -869,7 +891,7 @@
                 "version": "latest"
             },
             "dataDiskSize": "[parameters('mongoNodeDataDiskSizeGB')]",
-            "installerBaseUrl": "http://repo.mongodb.org/apt/ubuntu",
+            "installerBaseUrl": "[parameters('mongoDbInstallerBaseUrl')]",
             "installerPackages": "mongodb-org"
         },
         "mysqlMachineSettings": {
