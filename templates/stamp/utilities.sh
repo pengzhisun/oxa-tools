@@ -679,20 +679,35 @@ install-powershell()
 
     log "Installing Powershell"
 
-    wget https://raw.githubusercontent.com/PowerShell/PowerShell/v6.0.0-alpha.15/tools/download.sh  -O ~/powershell_installer.sh
+    if [ "$cloud_environment_name" = "AzureChinaCloud" ] ; then
 
-    # make sure we have the downloaded file
-    if [ -f ~/powershell_installer.sh ]; then
-        exit_on_error "The powershell installation script could not be downloaded" $ERROR_POWERSHELLINSTALL_FAILED
+        package_name="powershell_6.0.0-alpha.15-1ubuntu1.16.04.1_amd64.deb"
+        curl -LO https://ccgmsref.blob.core.windows.net/mirror/$package_name -o ~/$package_name
+
+        # make sure we have the downloaded file
+        if [ -f ~/$package_name ]; then
+            exit_on_error "The powershell installation package could not be downloaded" $ERROR_POWERSHELLINSTALL_FAILED
+        fi
+
+        dpkg -i "~/$package_name" &> /dev/null
+        apt-get install -y -f
+        exit_on_error "Powershell installation failed ${HOSTNAME} !" $ERROR_POWERSHELLINSTALL_FAILED
+    else
+        wget https://raw.githubusercontent.com/PowerShell/PowerShell/v6.0.0-alpha.15/tools/download.sh  -O ~/powershell_installer.sh
+
+        # make sure we have the downloaded file
+        if [ -f ~/powershell_installer.sh ]; then
+            exit_on_error "The powershell installation script could not be downloaded" $ERROR_POWERSHELLINSTALL_FAILED
+        fi
+
+        # the installer script requires a prompt/confirmation to install the powershell package.
+        # this needs to be disabled for automation purposes
+        sed -i "s/sudo apt-get install -f.*/sudo apt-get install -y -f/I" ~/powershell_installer.sh
+
+        # execute the installer
+        bash ~/powershell_installer.sh
+        exit_on_error "Powershell installation failed ${HOSTNAME} !" $ERROR_POWERSHELLINSTALL_FAILED
     fi
-
-    # the installer script requires a prompt/confirmation to install the powershell package.
-    # this needs to be disabled for automation purposes
-    sed -i "s/sudo apt-get install -f.*/sudo apt-get install -y -f/I" ~/powershell_installer.sh
-
-    # execute the installer
-    bash ~/powershell_installer.sh
-    exit_on_error "Powershell installation failed ${HOSTNAME} !" $ERROR_POWERSHELLINSTALL_FAILED
 }
 
 #############################################################################
