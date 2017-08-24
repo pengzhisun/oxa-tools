@@ -650,7 +650,7 @@ install-mailer $SMTP_SERVER $SMTP_SERVER_PORT $SMTP_AUTH_USER $SMTP_AUTH_USER_PA
 exit_on_error "Configuring the mailer failed"
 
 # 1. Setup Tools
-install-tools
+install-tools $CLOUD_ENVIRONMENT_NAME
 
 if [ "$MACHINE_ROLE" == "jumpbox" ] || [ "$MACHINE_ROLE" == "vmss" ];
 then

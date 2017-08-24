@@ -208,7 +208,7 @@ fi
 # execute on both local & remote sessions
 
 # install tools
-install-tools
+install-tools $cloud_environment_name
 
 # install mailer
 install-mailer "${smtp_server}" "${smtp_server_port}" "${smtp_auth_user}" "${smtp_auth_user_password}" "${cluster_admin_email}"

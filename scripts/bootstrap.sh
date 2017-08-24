@@ -63,6 +63,9 @@ NOTIFICATION_MESSAGE=""
 SECONDARY_LOG="/var/log/bootstrap.csx.log"
 PRIMARY_LOG="/var/log/bootstrap.log"
 
+# Cloud Environment Name
+CLOUD_ENVIRONMENT_NAME="AzureCloud"
+
 display_usage() {
   echo "Usage: $0 [-r|--role {jb|vmss|mongo|mysql|edxapp|fullstack|devstack}] [-e|--environment {dev|bvt|int|prod}] [--cron] --keyvault-name {azure keyvault name} --aad-webclient-id {AAD web application client id} --aad-webclient-appkey {AAD web application client key} --aad-tenant-id {AAD Tenant to authenticate against} --azure-subscription-id {Azure subscription Id}"
   exit 1
@@ -165,6 +168,9 @@ parse_args()
           --cluster-name)
             CLUSTER_NAME="${arg_value}"
             MAIL_SUBJECT="${MAIL_SUBJECT} - ${arg_value,,}"
+            ;;
+          --cloud-environment-name)
+            CLOUD_ENVIRONMENT_NAME="${arg_value}"
             ;;
           *)
             # Unknown option encountered
@@ -385,7 +391,7 @@ edx_installation_playbook()
   install-sudo
 
   # git, gettext
-  install-tools
+  install-tools $CLOUD_ENVIRONMENT_NAME
 
   command="$ANSIBLE_PLAYBOOK -i localhost, -c local -e@$OXA_PLAYBOOK_CONFIG vagrant-${EDX_ROLE}.yml"
 

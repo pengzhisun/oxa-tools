@@ -170,12 +170,19 @@ install-gettext()
 
 install-mongodb-shell()
 {
+    cloud_environment_name=$1
+
     if type mongo >/dev/null 2>&1; then
         log "MongoDB Shell is already installed"
     else
         log "Installing MongoDB Shell"
         
         PACKAGE_URL=http://repo.mongodb.org/apt/ubuntu
+
+        if [ "$cloud_environment_name" = "AzureChinaCloud" ] ; then
+            PACKAGE_URL=https://mirror.azure.cn/mongodb/apt/ubuntu
+        fi
+
         SHORT_RELEASE_NUMBER=`lsb_release -sr`
         SHORT_CODENAME=`lsb_release -sc`
 
@@ -1275,6 +1282,8 @@ is_master_server()
 #############################################################################
 install-tools()
 {
+    cloud_environment_name=$1
+
     machine_role=$(get_machine_role)
 
     # 1. Setup Tools
@@ -1286,11 +1295,15 @@ install-tools()
     if [[ "$machine_role" == "jumpbox" ]] || [[ "$machine_role" == "vmss" ]] ;
     then
         install-bc
-        install-mongodb-shell
+        install-mongodb-shell $cloud_environment_name
         install-mysql-client
 
         install-powershell
-        install-azure-cli
+
+        if [ "$cloud_environment_name" != "AzureChinaCloud" ] ; then
+            install-azure-cli
+        fi
+        
         install-azure-cli-2
 
         if [[ "$machine_role" == "jumpbox" ]] ; 
