@@ -689,8 +689,11 @@ install-powershell()
             exit_on_error "The powershell installation package could not be downloaded" $ERROR_POWERSHELLINSTALL_FAILED
         fi
 
-        dpkg -i "~/$package_name" &> /dev/null
-        apt-get install -y -f
+        log "Installing PowerShell with sudo..."
+        sudo dpkg -i "~/$package_name" &> /dev/null
+        sudo apt-get install -y -f
+
+        powershell -noprofile -c '"Congratulations! PowerShell is installed at $PSHOME"'
         exit_on_error "Powershell installation failed ${HOSTNAME} !" $ERROR_POWERSHELLINSTALL_FAILED
     else
         wget https://raw.githubusercontent.com/PowerShell/PowerShell/v6.0.0-alpha.15/tools/download.sh  -O ~/powershell_installer.sh
