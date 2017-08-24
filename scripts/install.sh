@@ -63,6 +63,9 @@ NOTIFICATION_MESSAGE=""
 SECONDARY_LOG="/var/log/bootstrap.csx.log"
 PRIMARY_LOG="/var/log/bootstrap.log"
 
+# cloud environment name
+CLOUD_ENVIRONMENT_NAME="AzureCloud"
+
 help()
 {
     echo "This script sets up SSH, installs MDSD and runs the DB bootstrap"
@@ -98,6 +101,7 @@ help()
     echo "        --azure-subscription-id    Azure subscription id"
     echo "        --cluster-admin-email Email address of the administrator where system and other notifications will be sent"
     echo "        --cluster-name Name of the cluster being bootstrapped"
+    echo "        --cloud-environment-name the Cloud Environment Name to support Azure National Clouds like AzureChinaCloud, AzureGermanCloud and AzureUSGovernment, the default value is AzureCloud"
 }
 
 # Parse script parameters
@@ -219,6 +223,15 @@ parse_args()
                 CLUSTER_NAME="${arg_value}"
                 MAIL_SUBJECT="${MAIL_SUBJECT} - ${arg_value,,}"
                 ;;
+            --cloud-environment-name)
+                CLOUD_ENVIRONMENT_NAME="${arg_value}"
+                if ( ! is_valid_arg "AzureCloud AzureChinaCloud AzureGermanCloud AzureUSGovernment" $CLOUD_ENVIRONMENT_NAME ) ; 
+                then
+                  echo "Invalid value specified for cloud environment name"
+                  help
+                  exit 2
+                fi
+                ;;
             -h|--help)  # Helpful hints
                 help
                 exit 2
@@ -335,7 +348,7 @@ then
     EDX_THEME_GITHUB_PARAMS="--edxtheme-public-github-accountname $EDX_THEME_PUBLIC_GITHUB_ACCOUNTNAME --edxtheme-public-github-projectname $EDX_THEME_PUBLIC_GITHUB_PROJECTNAME --edxtheme-public-github-projectbranch $EDX_THEME_PUBLIC_GITHUB_PROJECTBRANCH"
     ANSIBLE_GITHUB_PARAMS="--ansible-public-github-accountname $ANSIBLE_PUBLIC_GITHUB_ACCOUNTNAME --ansible-public-github-projectname $ANSIBLE_PUBLIC_GITHUB_PROJECTNAME --ansible-public-github-projectbranch $ANSIBLE_PUBLIC_GITHUB_PROJECTBRANCH"
 
-    INSTALL_COMMAND="sudo flock -n /var/log/bootstrap.lock bash $REPO_ROOT/$OXA_TOOLS_PUBLIC_GITHUB_PROJECTNAME/scripts/bootstrap.sh -e $CLOUD_NAME --role $SHORT_ROLE_NAME --installer-script-path $CRON_INSTALLER_SCRIPT --cluster-admin-email $CLUSTER_ADMIN_EMAIL --cluster-name $CLUSTER_NAME ${OXA_TOOLS_GITHUB_PARAMS} ${EDX_CONFIGURATION_GITHUB_PARAMS} ${EDX_PLATFORM_GITHUB_PARAMS} ${EDX_THEME_GITHUB_PARAMS} ${ANSIBLE_GITHUB_PARAMS} --edxversion $EDX_VERSION --forumversion $FORUM_VERSION --cron >> /var/log/bootstrap.log 2>&1"
+    INSTALL_COMMAND="sudo flock -n /var/log/bootstrap.lock bash $REPO_ROOT/$OXA_TOOLS_PUBLIC_GITHUB_PROJECTNAME/scripts/bootstrap.sh -e $CLOUD_NAME --role $SHORT_ROLE_NAME --installer-script-path $CRON_INSTALLER_SCRIPT --cluster-admin-email $CLUSTER_ADMIN_EMAIL --cluster-name $CLUSTER_NAME ${OXA_TOOLS_GITHUB_PARAMS} ${EDX_CONFIGURATION_GITHUB_PARAMS} ${EDX_PLATFORM_GITHUB_PARAMS} ${EDX_THEME_GITHUB_PARAMS} ${ANSIBLE_GITHUB_PARAMS} --edxversion $EDX_VERSION --forumversion $FORUM_VERSION --cloud-environment-name $CLOUD_ENVIRONMENT_NAME --cron >> /var/log/bootstrap.log 2>&1"
     echo $INSTALL_COMMAND > $CRON_INSTALLER_SCRIPT
 
     # Remove the task if it is already setup
