@@ -24,6 +24,9 @@ Name of the storage account where the container will be created
 .PARAMETER StorageContainerNames
 Name(s) of the storage container(s) to create. Use a comma-separated list to specify multiple containers
 
+.PARAMETER AzureCliVersion
+Version of Azure CLI to use
+
 .PARAMETER CloudEnvironmentName
 The Cloud Environment Name to support Azure National Clouds like AzureChinaCloud, AzureGermanCloud and AzureUSGovernment, the default value is AzureCloud
 
@@ -46,6 +49,7 @@ Param(
         [Parameter(Mandatory=$true)][string]$StorageAccountName,
         [Parameter(Mandatory=$true)][string]$StorageAccountKey,
         [Parameter(Mandatory=$true)][string]$StorageContainerNames,
+        [Parameter(Mandatory=$false)][string][ValidateSet("1","2")]$AzureCliVersion="1",
         [Parameter(Mandatory=$false)][string]$CloudEnvironmentName="AzureCloud"
      )
 
@@ -78,6 +82,9 @@ $invocation = (Get-Variable MyInvocation).Value
 $currentPath = Split-Path $invocation.MyCommand.Path 
 Import-Module "$($currentPath)/Common.ps1" -Force
 
+# track version of cli to use
+[bool]$isCli2 = ($AzureCliVersion -eq "2")
+
 # Login First & set context
 Authenticate-AzureRmUser -CloudEnvironmentName $CloudEnvironmentName -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId;
 Set-AzureSubscriptionContext -AzureSubscriptionId $AzureSubscriptionId
@@ -90,7 +97,14 @@ foreach($storageContainerName in $storageContainerList)
     # todo: add retries for better resiliency
     Log-Message "Creating Storage Container: $($storageContainerName)" -Context "Create Storage Containers" -NoNewLine
 
-    # todo: fall back to azure cli since there are existing issues with installation of azure powershell cmdlets for linux
-    # cli doesn't provide clean object returns (json responses are helpful). Therefore, transition as soon as possible
-    azure storage container create --account-name $StorageAccountName --account-key $StorageAccountKey --container $storageContainerName --json
+    if ($isCli2)
+    {
+        az storage container create --account-name $StorageAccountName --account-key $StorageAccountKey --name $storageContainerName --output json
+    }
+    else
+    {
+        # todo: fall back to azure cli since there are existing issues with installation of azure powershell cmdlets for linux
+        # cli doesn't provide clean object returns (json responses are helpful). Therefore, transition as soon as possible
+        azure storage container create --account-name $StorageAccountName --account-key $StorageAccountKey --container $storageContainerName --json    
+    }
 }
