@@ -23,6 +23,9 @@ cluster_admin_email=""
 # this is the user account that will be used for ssh
 target_user=""
 
+# cloud environment name
+cloud_environment_name="AzureCloud"
+
 # operation mode: 0=local, 1=remote via ssh
 remote_mode=0
 
@@ -85,6 +88,9 @@ parse_args()
           --target-user)
             target_user="${arg_value}"
             ;;
+          --cloud-environment-name)
+            cloud_environment_name="${arg_value}"
+            ;;
           --remote)
             remote_mode=1
             ;;
@@ -134,7 +140,7 @@ execute_remote_command()
     
     repository_parameters="--oxatools-public-github-accountname ""${oxa_tools_public_github_account}"" --oxatools-public-github-projectname ""${oxa_tools_public_github_projectname}"" --oxatools-public-github-projectbranch ""${oxa_tools_public_github_projectbranch}"" --oxatools-public-github-branchtag ""${oxa_tools_public_github_branchtag}"" --oxatools-repository-path ""${oxa_tools_repository_path}"""
     smtp_parameters="--smtp-server ""${smtp_server}"" --smtp-server-port ""${smtp_server_port}"" --smtp-auth-user ""${smtp_auth_user}"" --smtp-auth-user-password ""${smtp_auth_user_password}"""
-    misc_parameters="--cluster-admin-email ""${cluster_admin_email}"" --target-user ""${target_user}"" --remote"
+    misc_parameters="--cluster-admin-email ""${cluster_admin_email}"" --target-user ""${target_user}"" --cloud-environment-name ""${cloud_environment_name}"" --remote"
 
     remote_command="sudo bash ~/install.sh ${repository_parameters} ${smtp_parameters} ${misc_parameters}"
 

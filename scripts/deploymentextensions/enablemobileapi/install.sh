@@ -47,6 +47,9 @@ vmss_deployment_id=""
 # cloud being deployed
 cloud="bvt"
 
+# cloud environment name
+cloud_environment_name="AzureCloud"
+
 #############################################################################
 # parse the command line arguments
 
@@ -112,6 +115,9 @@ parse_args()
           --cloud)
             cloud="${arg_value}"
             ;;
+          --cloud-environment-name)
+            cloud_environment_name="${arg_value}"
+            ;;
           --remote)
             remote_mode=1
             ;;
@@ -139,7 +145,7 @@ execute_remote_command()
     repository_parameters="--oxatools-public-github-accountname ""${oxa_tools_public_github_account}"" --oxatools-public-github-projectname ""${oxa_tools_public_github_projectname}"" --oxatools-public-github-projectbranch ""${oxa_tools_public_github_projectbranch}"" --oxatools-public-github-branchtag ""${oxa_tools_public_github_branchtag}"" --oxatools-repository-path ""${oxa_tools_repository_path}"""
     aad_parameters="--aad-webclient-id ""${aad_webclient_id}"" --aad-webclient-appkey ""${aad_webclient_appkey}"" --aad-tenant-id ""${aad_tenant_id}"""
     azure_subscription_parameters="--azure-subscription-id ""${azure_subscription_id}"" --azure-resource-group ""${azure_resource_group}"""
-    misc_parameters="--cluster-admin-email ""${cluster_admin_email}"" --target-user ""${target_user}"" --remote"
+    misc_parameters="--cluster-admin-email ""${cluster_admin_email}"" --target-user ""${target_user}"" --cloud-environment-name ""${cloud_environment_name}"" --remote"
 
     # conditionally enable debug mode over the remote session
     if [[ $debug_mode == 1 ]];
@@ -388,7 +394,7 @@ keyvault_name="${azure_resource_group}-kv"
 # set the home path 
 export HOME=~/
 
-powershell -file "${oxa_tools_repository_path}/scripts/Process-OxaToolsKeyVaultConfiguration.ps1" -Operation "Upload" -VaultName "${keyvault_name}" -AadWebClientId "${aad_webclient_id}" -AadWebClientAppKey "${aad_webclient_appkey}" -AadTenantId "${aad_tenant_id}" -TargetPath "${cloud_config_basepath}" -AzureSubscriptionId "${azure_subscription_id}" -AzureCliVersion 2
+powershell -file "${oxa_tools_repository_path}/scripts/Process-OxaToolsKeyVaultConfiguration.ps1" -Operation "Upload" -VaultName "${keyvault_name}" -AadWebClientId "${aad_webclient_id}" -AadWebClientAppKey "${aad_webclient_appkey}" -AadTenantId "${aad_tenant_id}" -TargetPath "${cloud_config_basepath}" -AzureSubscriptionId "${azure_subscription_id}" -AzureCliVersion 2 -CloudEnvironmentName "${cloud_environment_name}"
 exit_on_error "Failed downloading configurations from keyvault" 1 "${MAIL_SUBJECT} Failed" $CLUSTER_ADMIN_EMAIL $PRIMARY_LOG $SECONDARY_LOG
 
 log "Completed the enabling of Mobile Rest Api ${target_user}"
