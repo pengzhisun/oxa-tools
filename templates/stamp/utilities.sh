@@ -690,9 +690,8 @@ install-powershell()
         fi
 
         dpkg -i "~/$package_name" &> /dev/null
+        apt-get install -y
         exit_on_error "Powershell installation failed ${HOSTNAME} !" $ERROR_POWERSHELLINSTALL_FAILED
-
-        apt-get install -f
     else
         wget https://raw.githubusercontent.com/PowerShell/PowerShell/v6.0.0-alpha.15/tools/download.sh  -O ~/powershell_installer.sh
 
