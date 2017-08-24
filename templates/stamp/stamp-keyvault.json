@@ -641,6 +641,19 @@
                 "description": "Indicator of whether or not the Mobile Rest Api is enabled for further integration"
             }
         },
+        "cloudEnvironmentName": {
+            "type": "string",
+            "defaultValue": "AzureCloud",
+            "allowedValues": [
+                "AzureCloud",
+                "AzureChinaCloud",
+                "AzureGermanCloud",
+                "AzureUSGovernment"
+            ],
+            "metadata": {
+                "description": "The Cloud Environment Name to support Azure National Clouds like AzureChinaCloud, AzureGermanCloud and AzureUSGovernment, the default value is AzureCloud"
+            }
+        },
         "blobStorageHostBase": {
             "type": "string",
             "defaultValue": ".blob.core.windows.net",

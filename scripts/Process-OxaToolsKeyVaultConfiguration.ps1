@@ -94,7 +94,7 @@ Import-Module "$($currentPath)/Common.ps1" -Force
 [bool]$isCli2 = ($AzureCliVersion -eq "2")
 
 # Login First & set context
-Authenticate-AzureRmUser -EnvironmentName $CloudEnvironmentName -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId -IsCli2 $isCli2
+Authenticate-AzureRmUser -CloudEnvironmentName $CloudEnvironmentName -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId -IsCli2 $isCli2
 Set-AzureSubscriptionContext -AzureSubscriptionId $AzureSubscriptionId -IsCli2 $isCli2 
 
 # Get the directory separator

@@ -24,6 +24,9 @@ Name of the storage account where the container will be created
 .PARAMETER StorageContainerNames
 Name(s) of the storage container(s) to create. Use a comma-separated list to specify multiple containers
 
+.PARAMETER CloudEnvironmentName
+The Cloud Environment Name to support Azure National Clouds like AzureChinaCloud, AzureGermanCloud and AzureUSGovernment, the default value is AzureCloud
+
 .INPUTS
 None. You cannot pipe objects to Create-StorageContainer.ps1
 
@@ -42,7 +45,8 @@ Param(
         [Parameter(Mandatory=$true)][string]$AzureSubscriptionId,
         [Parameter(Mandatory=$true)][string]$StorageAccountName,
         [Parameter(Mandatory=$true)][string]$StorageAccountKey,
-        [Parameter(Mandatory=$true)][string]$StorageContainerNames
+        [Parameter(Mandatory=$true)][string]$StorageContainerNames,
+        [Parameter(Mandatory=$false)][string]$CloudEnvironmentName="AzureCloud"
      )
 
 ###########################################
@@ -75,7 +79,7 @@ $currentPath = Split-Path $invocation.MyCommand.Path
 Import-Module "$($currentPath)/Common.ps1" -Force
 
 # Login First & set context
-Authenticate-AzureRmUser -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId;
+Authenticate-AzureRmUser -CloudEnvironmentName $CloudEnvironmentName -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId;
 Set-AzureSubscriptionContext -AzureSubscriptionId $AzureSubscriptionId
 
 # Create the container

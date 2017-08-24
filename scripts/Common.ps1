@@ -330,7 +330,7 @@ function Set-AzureSubscriptionContext
 ##   AadWebClientAppKey       the azure active directory web application key
 ##   AadTenantId              the azure active directory tenant id
 ##   IsCli2                   indicator of whether or not azure cli 2.0 is used
-##   EnvironmentName          the Cloud Environment Name to support Azure National Clouds like AzureChinaCloud, AzureGermanCloud and AzureUSGovernment, the default value is AzureCloud
+##   CloudEnvironmentName          the Cloud Environment Name to support Azure National Clouds like AzureChinaCloud, AzureGermanCloud and AzureUSGovernment, the default value is AzureCloud
 ##
 ## Output:
 ##   nothing
@@ -342,13 +342,13 @@ function Authenticate-AzureRmUser
             [Parameter(Mandatory=$true)][string]$AadWebClientAppKey,
             [Parameter(Mandatory=$true)][string]$AadTenantId,
             [Parameter(Mandatory=$false)][boolean]$IsCli2=$false,
-            [Parameter(Mandatory=$false)][string]$EnvironmentName="AzureCloud"
+            [Parameter(Mandatory=$false)][string]$CloudEnvironmentName="AzureCloud"
          )
 
     Log-Message "Logging in as service principal for '$($AadTenantId)'"
     if ($IsCli2)
     {
-        az cloud set --name $EnvironmentName
+        az cloud set --name $CloudEnvironmentName
         $results = az login -u $AadWebClientId --service-principal --tenant $AadTenantId -p $AadWebClientAppKey --output json | Out-String
         if ($results.Contains("error"))
         {
@@ -357,7 +357,7 @@ function Authenticate-AzureRmUser
     }
     else
     {
-        $results = azure login -e $EnvironmentName -u $AadWebClientId --service-principal --tenant $AadTenantId -p $AadWebClientAppKey -vv --json | Out-String
+        $results = azure login -e $CloudEnvironmentName -u $AadWebClientId --service-principal --tenant $AadTenantId -p $AadWebClientAppKey -vv --json | Out-String
         if (!$results.Contains("login command OK"))
         {
             throw "Login failed"

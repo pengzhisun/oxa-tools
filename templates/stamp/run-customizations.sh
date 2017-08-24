@@ -99,6 +99,9 @@ AZURE_CLI_VERSION="2"
 # Mobile rest api 
 EDXAPP_ENABLE_MOBILE_REST_API="false"
 
+# Cloud Environment Name
+CLOUD_ENVIRONMENT_NAME="AzureCloud"
+
 help()
 {
     echo "This script bootstraps the OXA Stamp"
@@ -154,6 +157,7 @@ help()
     echo "        --azurecli-version azure cli version to use"
     echo "        --memcache-server the memcache server to use"
     echo "        --enable-mobile-rest-api indicator of whether or not the mobile rest api will be enabled"
+    echo "        --cloud-environment-name the Cloud Environment Name to support Azure National Clouds like AzureChinaCloud, AzureGermanCloud and AzureUSGovernment, the default value is AzureCloud"
 }
 
 # Parse script parameters
@@ -420,6 +424,15 @@ parse_args()
                   exit 2
                 fi
                 ;;
+             --cloud-environment-name)
+                CLOUD_ENVIRONMENT_NAME="${arg_value}"
+                if ( ! is_valid_arg "AzureCloud AzureChinaCloud AzureGermanCloud AzureUSGovernment" $CLOUD_ENVIRONMENT_NAME ) ; 
+                then
+                  echo "Invalid value specified for cloud environment name"
+                  help
+                  exit 2
+                fi
+                ;;
             -h|--help)  # Helpful hints
                 help
                 exit 2
@@ -677,11 +690,11 @@ if [[ -d $OXA_ENV_PATH ]]; then
     rm -rf $OXA_ENV_PATH
 fi
 
-powershell -file $INSTALLER_BASEPATH/Process-OxaToolsKeyVaultConfiguration.ps1 -Operation Download -VaultName $KEYVAULT_NAME -AadWebClientId $AAD_WEBCLIENT_ID -AadWebClientAppKey $AAD_WEBCLIENT_APPKEY -AadTenantId $AAD_TENANT_ID -TargetPath $OXA_ENV_PATH -AzureSubscriptionId $AZURE_SUBSCRIPTION_ID -AzureCliVersion $AZURE_CLI_VERSION
+powershell -file $INSTALLER_BASEPATH/Process-OxaToolsKeyVaultConfiguration.ps1 -Operation Download -VaultName $KEYVAULT_NAME -AadWebClientId $AAD_WEBCLIENT_ID -AadWebClientAppKey $AAD_WEBCLIENT_APPKEY -AadTenantId $AAD_TENANT_ID -TargetPath $OXA_ENV_PATH -AzureSubscriptionId $AZURE_SUBSCRIPTION_ID -AzureCliVersion $AZURE_CLI_VERSION -CloudEnvironmentName $CLOUD_ENVIRONMENT_NAME
 exit_on_error "Failed downloading configurations from keyvault" 1 "${MAIL_SUBJECT} Failed" $CLUSTER_ADMIN_EMAIL $PRIMARY_LOG $SECONDARY_LOG
 
 # create storage container for edxapp:migrate & other reporting features (containers for the database backup will be created dynamically)
-powershell -file $INSTALLER_BASEPATH/Create-StorageContainer.ps1 -AadWebClientId $AAD_WEBCLIENT_ID -AadWebClientAppKey $AAD_WEBCLIENT_APPKEY -AadTenantId $AAD_TENANT_ID -AzureSubscriptionId $AZURE_SUBSCRIPTION_ID -StorageAccountName "${BACKUP_STORAGEACCOUNT_NAME}" -StorageAccountKey "${BACKUP_STORAGEACCOUNT_KEY}" -StorageContainerNames "uploads,reports,tracking"
+powershell -file $INSTALLER_BASEPATH/Create-StorageContainer.ps1 -AadWebClientId $AAD_WEBCLIENT_ID -AadWebClientAppKey $AAD_WEBCLIENT_APPKEY -AadTenantId $AAD_TENANT_ID -AzureSubscriptionId $AZURE_SUBSCRIPTION_ID -StorageAccountName "${BACKUP_STORAGEACCOUNT_NAME}" -StorageAccountKey "${BACKUP_STORAGEACCOUNT_KEY}" -StorageContainerNames "uploads,reports,tracking" -CloudEnvironmentName $CLOUD_ENVIRONMENT_NAME
 exit_on_error "Failed creating container(s) for edxapp:migrate (uploads,reports,tracking) in '${BACKUP_STORAGEACCOUNT_NAME}'" 1 "${MAIL_SUBJECT} Failed" $CLUSTER_ADMIN_EMAIL $PRIMARY_LOG $SECONDARY_LOG
 
 persist_deployment_time_values
