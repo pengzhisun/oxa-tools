@@ -86,7 +86,7 @@ Import-Module "$($currentPath)/Common.ps1" -Force
 [bool]$isCli2 = ($AzureCliVersion -eq "2")
 
 # Login First & set context
-Authenticate-AzureRmUser -CloudEnvironmentName $CloudEnvironmentName -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId;
+Authenticate-AzureRmUser -CloudEnvironmentName $CloudEnvironmentName -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId -IsCli2 $isCli2
 Set-AzureSubscriptionContext -AzureSubscriptionId $AzureSubscriptionId
 
 # Create the container
