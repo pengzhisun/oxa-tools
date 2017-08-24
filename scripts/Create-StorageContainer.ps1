@@ -87,7 +87,7 @@ Import-Module "$($currentPath)/Common.ps1" -Force
 
 # Login First & set context
 Authenticate-AzureRmUser -CloudEnvironmentName $CloudEnvironmentName -AadWebClientId $AadWebClientId -AadWebClientAppKey $AadWebClientAppKey -AadTenantId $AadTenantId -IsCli2 $isCli2
-Set-AzureSubscriptionContext -AzureSubscriptionId $AzureSubscriptionId
+Set-AzureSubscriptionContext -AzureSubscriptionId $AzureSubscriptionId -IsCli2 $isCli2 
 
 # Create the container
 [array]$storageContainerList = $StorageContainerNames.Split(",");
